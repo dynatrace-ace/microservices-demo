@@ -1,16 +1,14 @@
 FROM golang:1.12-alpine as builder
-RUN apk add --no-cache ca-certificates gcc libc-dev git && \
-      wget -qO/go/bin/dep https://github.com/golang/dep/releases/download/v0.5.0/dep-linux-amd64 && \
-      chmod +x /go/bin/dep
+RUN apk add --no-cache ca-certificates gcc libc-dev git
 
 ENV PROJECT github.com/GoogleCloudPlatform/microservices-demo/src/checkoutservice
 WORKDIR /go/src/$PROJECT
 
 # restore dependencies
 COPY Gopkg.* ./
-RUN dep ensure --vendor-only -v
 
 COPY . .
+RUN go get -d ./...
 RUN go build -ldflags '-linkmode external' -gcflags='-N -l' -o /checkoutservice .
 
 FROM alpine as release
