@@ -30,7 +30,7 @@ spec:
       terminationGracePeriodSeconds: 5
       restartPolicy: Always
       containers:
-      - name: main
+      - name: loadgenerator
         image: loadgenerator
         env:
         - name: FRONTEND_ADDR

@@ -1,5 +1,5 @@
 FROM golang:1.12-alpine as builder
-RUN apk add --no-cache ca-certificates git && \
+RUN apk add --no-cache ca-certificates gcc libc-dev git && \
       wget -qO/go/bin/dep https://github.com/golang/dep/releases/download/v0.5.0/dep-linux-amd64 && \
       chmod +x /go/bin/dep
 
@@ -10,7 +10,7 @@ WORKDIR /go/src/$PROJECT
 COPY Gopkg.* ./
 RUN dep ensure --vendor-only -v
 COPY . .
-RUN go install .
+RUN go install -ldflags '-linkmode external' .
 
 FROM alpine as release
 RUN apk add --no-cache ca-certificates
